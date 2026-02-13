@@ -543,6 +543,20 @@
     </div>
 
     <p class="audio-tip" id="statusText" aria-live="polite"></p>
+
+    <button id="valBtn" style="
+      display:none;
+      border:0;
+      border-radius:999px;
+      padding:12px 16px;
+      font-weight:950;
+      cursor:pointer;
+      color:#fff;
+      background:linear-gradient(180deg,#ff7fc2,#ff4fa3);
+      box-shadow:0 12px 24px rgba(255,79,163,.18);
+    ">
+      One more… 💌
+    </button>
   </main>
 
   <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Birthday cake popup">
@@ -599,6 +613,27 @@ Happy Birthday, Shai 💗 I hope today makes you smile a little extra. Make a wi
     </div>
   </div>
 
+  <div class="overlay" id="valOverlay" role="dialog" aria-modal="true" aria-label="Valentine popup">
+    <div class="sheet">
+      <div class="sheet-header">
+        <div class="sheet-title">💗 A question, Shai…</div>
+        <button class="close" id="valCloseBtn" aria-label="Close popup">Close</button>
+      </div>
+
+      <div class="sheet-body">
+        <p class="sheet-note" style="font-size:16px;">
+          Will you be my Valentine? 💘
+          <br><span style="opacity:.85;">— Migs</span>
+        </p>
+
+        <div class="cta-row">
+          <button class="btn primary" id="valYesBtn">Yes 💗</button>
+          <button class="btn ghost" id="valNoBtn">Not yet 😳</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Custom song: put your audio file(s) in /assets and keep these names.
        GitHub Pages is HTTPS so mic works on iPhone. -->
   <audio id="music" preload="auto" loop playsinline>
@@ -621,6 +656,12 @@ Happy Birthday, Shai 💗 I hope today makes you smile a little extra. Make a wi
   const burstLayer = $("burstLayer");
   const candlesEl = $("candles");
   const music = $("music");
+
+  const valBtn = document.getElementById("valBtn");
+  const valOverlay = document.getElementById("valOverlay");
+  const valCloseBtn = document.getElementById("valCloseBtn");
+  const valYesBtn = document.getElementById("valYesBtn");
+  const valNoBtn = document.getElementById("valNoBtn");
 
   // ---------- Background floaters ----------
   function makeFloat(kind){
@@ -845,6 +886,7 @@ Happy Birthday, Shai 💗 I hope today makes you smile a little extra. Make a wi
           burstHearts(30);
           balloonBurst(14);
           setTimeout(closeSurprise, 700);
+          setTimeout(() => { if(valBtn) valBtn.style.display = "inline-block"; }, 950);
           return;
         }
 
@@ -882,6 +924,16 @@ Happy Birthday, Shai 💗 I hope today makes you smile a little extra. Make a wi
     if(!allOut()) statusText.textContent = "Keep blowing… 🌬️";
   }
 
+      // ---------- Valentine popup controls ----------
+  function openValentine(){
+    if(valOverlay) valOverlay.classList.add("show");
+    burstHearts(22);
+    balloonBurst(10);
+  }
+  function closeValentine(){
+    if(valOverlay) valOverlay.classList.remove("show");
+  }
+
   // ---------- Popup controls ----------
   function openSurprise(){
     overlay.classList.add("show");
@@ -910,6 +962,21 @@ Happy Birthday, Shai 💗 I hope today makes you smile a little extra. Make a wi
   overlay.addEventListener("click", (e) => { if(e.target === overlay) closeSurprise(); });
 
   moreHeartsBtn.addEventListener("click", () => { burstHearts(28); balloonBurst(8); });
+
+    // Valentine button
+  if(valBtn) valBtn.addEventListener("click", openValentine);
+  if(valCloseBtn) valCloseBtn.addEventListener("click", closeValentine);
+  if(valOverlay) valOverlay.addEventListener("click", (e) => { if(e.target === valOverlay) closeValentine(); });
+  if(valYesBtn) valYesBtn.addEventListener("click", () => {
+    burstHearts(40);
+    balloonBurst(18);
+    valYesBtn.textContent = "YAY! let him know sa IG DM 💗";
+  });
+  if(valNoBtn) valNoBtn.addEventListener("click", () => {
+    burstHearts(10);
+    valNoBtn.textContent = "Okay 😌";
+  });
+  
   relightBtn.addEventListener("click", () => { relight(); startMic(); });
 
   blowBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); startHoldBlow(); });
